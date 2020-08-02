@@ -8,9 +8,11 @@ There are multiple ways to hack your way through, so the guide below is just my 
 
 Make sure you have multi-node etcd cluster, otherwise you would need to perform another painful maintenance to convert it to multi-node. Consult this [guide](https://github.com/kubernetes/kops/blob/master/docs/single-to-multi-master.md) for more details on how to make it happen. As an alternative you can still perform this on a single node cluster by bringing it down for maintenance (NOT RECOMMENDED BY ANY MEANS).
 
-Now we need to bypass kops cluster spec validation, which won't allow us to simply change `encryptedVolume` fields for each etcd member to `true`. There are two ways of doing this: we can simply download current kops cluster spec from s3 bucket, modify these fields and re-upload modified
+Now we need to bypass kops cluster spec validation, which won't allow us to simply change `encryptedVolume` fields for each etcd member to `true`. There are two ways of doing this: we can simply download current kops cluster spec from S3 bucket, modify these fields and re-upload modified spec back.
 
-A bit less hacky option would be to use kops binary itself to make this happen (just to have all other bundled state validations serving us to reduce the chances to destroy our cluster completely). Depending on how you manage your cluster state in a declarative way you need to execute `kops edit cluster` or `kops replace -f` in two steps, by first changing the names of all etcd-members, eg.:
+A bit less hacky option would be to use kops binary itself to make this happen (just to have all other bundled state validations serving us to reduce the chances to destroy our cluster completely). Depending on how you manage your cluster state in a declarative way you need to execute `kops edit cluster` or `kops replace -f` in two steps, by first changing the names of all etcd-members:
+
+This part of cluster spec
 
 ```yaml
 spec:
