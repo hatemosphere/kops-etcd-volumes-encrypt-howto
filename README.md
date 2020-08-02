@@ -6,9 +6,9 @@ There are multiple ways to hack your way through, so the guide below is just my 
 
 ## Encrypt etcd volumes on running Kubernetes cluster managed by kops in AWS, wonky how-to
 
-1. Make sure you have multi-node etcd cluster, otherwise you would need to perform another painful maintenance to convert it to multi-node. Consult this [guide](https://github.com/kubernetes/kops/blob/master/docs/single-to-multi-master.md) for more details on how to make it happen. As an alternative you can still perform this on a single node cluster by bringing it down for maintenance (NOT RECOMMENDED BY ANY MEANS).
+Make sure you have multi-node etcd cluster, otherwise you would need to perform another painful maintenance to convert it to multi-node. Consult this [guide](https://github.com/kubernetes/kops/blob/master/docs/single-to-multi-master.md) for more details on how to make it happen. As an alternative you can still perform this on a single node cluster by bringing it down for maintenance (NOT RECOMMENDED BY ANY MEANS).
 
-2. Now we need to bypass kops cluster spec validation, which won't allow us to simply change `encryptedVolume` fields for each etcd member to `true`. There are two ways of doing this: we can simply download current kops cluster spec from s3 bucket, modify these fields and re-upload modified
+Now we need to bypass kops cluster spec validation, which won't allow us to simply change `encryptedVolume` fields for each etcd member to `true`. There are two ways of doing this: we can simply download current kops cluster spec from s3 bucket, modify these fields and re-upload modified
 
 A bit less hacky option would be to use kops binary itself to make this happen (just to have all other bundled state validations serving us to reduce the chances to destroy our cluster completely). Depending on how you manage your cluster state in a declarative way you need to execute `kops edit cluster` or `kops replace -f` in two steps, by first changing the names of all etcd-members, eg.:
 
@@ -63,7 +63,7 @@ spec:
 
 So now we have a discreptancy between cluster spec stored in S3 bucket and the actual state of our volumes. Knowing that kops won't store etcd EBS volume IDs and the actual volume discovery during master node startup relies ONLY on EBS volume tags, we are going to encrypt and replace these volumes one by one.
 
-3. Assuming that you have vanilla 3+ (don't ask me why would someone have more than 3 masters) master setup configured by kops which should look like 3+ AWS autoscaling groups, ideally one per one each availability zone, we are going to perform "etcd volume encryption rolling upgrade" for each ASG.
+Assuming that you have vanilla 3+ (don't ask me why would someone have more than 3 masters) master setup configured by kops which should look like 3+ AWS autoscaling groups, ideally one per one each availability zone, we are going to perform "etcd volume encryption rolling upgrade" for each ASG.
 
 For this we need to modify first ASG with Kubernetes master by reducing desired/minimum/maximum capacities from 1 to 0 and after it's done, to terminate the EC2 instance with Kubernetes master in the same AZ and wait for first etcd member volumes to change their state from `in-use` to `available` (by default you should have two etcd clusters per Kubernetes cluster, the main one and the second one to store only Kubernetes events).
 
