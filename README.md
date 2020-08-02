@@ -1,6 +1,6 @@
 # Preamble
 
-So if you stumbled across this repo to read this README file with one single purpose - to overcome kops  [limitation](https://github.com/kubernetes/kops/blob/master/docs/operations/etcd_backup_restore_encryption.md#etcd-volume-encryption) to not being able to encrypt etcd cluster volumes on running cluster, even while having shiny new `etcd-manager` managing your 3+ node etcd cluster, then you are in the right place. This was tested multiple times on ***AWS*** and will probably work in GCP with minor adjustments.
+So if you stumbled across this repo to read this README file with one single purpose - to overcome kops  [limitation](https://github.com/kubernetes/kops/blob/master/docs/operations/etcd_backup_restore_encryption.md#etcd-volume-encryption) to not being able to encrypt etcd cluster volumes on running cluster, even while having shiny new `etcd-manager` managing your 3+ node etcd cluster, then you are in the right place. This was tested multiple times on ***AWS*** and will probably work in GCP with minor adjustments. Your security department will be proud of you!
 
 There are multiple ways to hack your way through, so the guide below is just my opinionated best (read as "easiest/fastest/reliable") sequence of actions to achieve this.
 
