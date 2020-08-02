@@ -2,7 +2,14 @@
 
 As you might have guessed or noticed, AWS does not support on-the-fly encryption of EBS volumes (as of 01.08.2020), so this can only be performed through snapshotting and restoring with modified volume spec.
 
-This stupidly simple tool makes a snapshot of EBS volume, creates a new encrypted EBS volume with the same tags in the same AZ with the same spec (volume type and size are not passed explicitly since it happens under the hood through volume metadata stored in the snapshot), and eventually performs a cleanup of the snapshot. It won't remove or untag the old volume, and please do not expect any other automagic from it.
+***Key features of this stupidly simple tool:***
+
+- makes a snapshot of EBS volume
+- creates a new encrypted EBS volume with the same tags in the same AZ with the same spec (volume type and size are not passed explicitly since it happens under the hood through volume metadata stored in the snapshot)
+- eventually performs a cleanup of the snapshot
+
+- does not remove or untag the old volume
+- please do not expect any other automagic from it
 
 ### Usage
 
